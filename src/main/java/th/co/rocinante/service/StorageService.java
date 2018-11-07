@@ -111,12 +111,12 @@ public class StorageService {
 			orgs.add(AppConstant.ORG.P1POLICE);
 			
 			//export param && install chaincode
-			String exportChannel = "docker exec -it cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
+			String exportChannel = "docker exec cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
 			runDeCommand.run(exportChannel);
 			for (String peer : orgs) {
 				List<ParamApp> industyParams = paramRepos.findByGroupCode(peer);
 				for (ParamApp param : industyParams) {
-					String cmd = "docker exec -it cli export "+param.getCode()+"="+param.getData();
+					String cmd = "docker exec cli export "+param.getCode()+"="+param.getData();
 					MessageBean xx = runDeCommand.run(cmd);
 					for (String e : xx.getOutput()) {
 						System.out.println(e);
@@ -125,7 +125,7 @@ public class StorageService {
 						System.out.println(e);
 					}
 				}
-				String execInstallChaincode = "docker exec -it cli peer chaincode install -n "+chaincodeName+" -v "+version+" -p github.com/chaincode/upload/"+foldername;
+				String execInstallChaincode = "docker exec cli peer chaincode install -n "+chaincodeName+" -v "+version+" -p github.com/chaincode/upload/"+foldername;
 				MessageBean xx = runDeCommand.run(execInstallChaincode);
 				for (String e : xx.getOutput()) {
 					System.out.println(e);
@@ -135,7 +135,7 @@ public class StorageService {
 				}
 			}
 			
-			String execIntantiated = "docker exec -it cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c '"+argument+"' -P \""+endorsePolicy+"\"";
+			String execIntantiated = "docker exec cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c '"+argument+"' -P \""+endorsePolicy+"\"";
 			MessageBean xx =runDeCommand.run(execIntantiated);
 			for (String e : xx.getOutput()) {
 				System.out.println(e);
