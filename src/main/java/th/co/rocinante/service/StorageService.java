@@ -6,10 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +33,50 @@ public class StorageService {
 			
 			String foldername = file.getName();
 			
-			ZipFile zipFile = new ZipFile(zip);
+			ZipInputStream zis = new ZipInputStream(new FileInputStream(zip));
 			
-			String[] paths = localfolder.split("/");
-			for (String p : paths) {
-				log.info("path : {} ", p);
-				File f = new File(p);
+			File uploadPath = new File(localfolder);
+			
+			log.info("path is exist : {} ({})", uploadPath.exists(), uploadPath.toPath().toString());
+			if(!uploadPath.exists()) {
+				uploadPath.mkdirs();
 			}
-			
+			String sChaincodePath = localfolder+"/"+foldername;
+			File chaincodPath = new File(sChaincodePath);
+			log.info("path is exist : {} ({})", chaincodPath.exists(), chaincodPath.toPath().toString());
+			if(!chaincodPath.exists()) {
+				chaincodPath.mkdirs();
+			}
+			if(chaincodPath.exists()) {
+				byte[] buffer = new byte[1024];
+				ZipEntry ze = zis.getNextEntry();
+				while(ze!=null){
+	    			
+		    	   String fileName = ze.getName();
+		           File newFile = new File(sChaincodePath + File.separator + fileName);
+		                
+		           System.out.println("file unzip : "+ newFile.getAbsoluteFile());
+		                
+		            //create all non exists folders
+		            //else you will hit FileNotFoundException for compressed folder
+		            new File(newFile.getParent()).mkdirs();
+		              
+		            FileOutputStream fos = new FileOutputStream(newFile);             
+
+		            int len;
+		            while ((len = zis.read(buffer)) > 0) {
+		       		fos.write(buffer, 0, len);
+		            }
+		        		
+		            fos.close();   
+		            ze = zis.getNextEntry();
+		            
+			    }
+			    	
+			        zis.closeEntry();
+			    	zis.close();
+			    		
+			}
 			
 		} catch (FileNotFoundException e) {
 			result = e.getMessage();
