@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import net.lingala.zip4j.core.ZipFile;
 import th.co.rocinante.AppConstant;
 import th.co.rocinante.AppConstant.CHANNEL;
+import th.co.rocinante.bean.MessageBean;
 import th.co.rocinante.entity.ChainCode;
 import th.co.rocinante.entity.ParamApp;
 import th.co.rocinante.repository.ChainCodeRepository;
@@ -116,14 +117,32 @@ public class StorageService {
 				List<ParamApp> industyParams = paramRepos.findByGroupCode(peer);
 				for (ParamApp param : industyParams) {
 					String cmd = "docker exec -it cli export "+param.getCode()+"="+param.getData();
-					runDeCommand.run(cmd);
+					MessageBean xx = runDeCommand.run(cmd);
+					for (String e : xx.getOutput()) {
+						System.out.println(e);
+					}
+					for (String e : xx.getError()) {
+						System.out.println(e);
+					}
 				}
 				String execInstallChaincode = "docker exec -it cli peer chaincode install -n "+chaincodeName+" -v "+version+" -p github.com/chaincode/upload/"+foldername;
-				runDeCommand.run(execInstallChaincode);
+				MessageBean xx = runDeCommand.run(execInstallChaincode);
+				for (String e : xx.getOutput()) {
+					System.out.println(e);
+				}
+				for (String e : xx.getError()) {
+					System.out.println(e);
+				}
 			}
 			
 			String execIntantiated = "docker exec -it cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c '"+argument+"' -P \""+endorsePolicy+"\"";
-			runDeCommand.run(execIntantiated);
+			MessageBean xx =runDeCommand.run(execIntantiated);
+			for (String e : xx.getOutput()) {
+				System.out.println(e);
+			}
+			for (String e : xx.getError()) {
+				System.out.println(e);
+			}
 			
 		}
 		
