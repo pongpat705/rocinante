@@ -5,16 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<!--     <p th:text="'Hello, ' + ${hello} + '!'" /> -->
 
-<!-- 	<form action="#" th:action="@{/add}" th:object="${todo}" method="post"> -->
-<!-- 	  <fieldset> -->
-<!-- 	    <input type="text" name="title" /> -->
-<!-- 	    <input type="submit" value="Add"/> -->
-<!-- 	  </fieldset> -->
-<!-- 	</form> -->
+	<ul>
+    	<li><a th:href="@{/upload}">upload chaincode</a></li>
+    </ul>
     <ul>
-    	<li th:each="s : ${dockerContainers}" >
+    	<li th:each="s : ${dockerContainers.output}" >
     		<p th:text="${s}"></p>
     	</li>
     </ul>
