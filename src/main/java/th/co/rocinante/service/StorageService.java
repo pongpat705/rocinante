@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipException;
 
@@ -18,8 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import net.lingala.zip4j.core.ZipFile;
+import th.co.rocinante.AppConstant;
+import th.co.rocinante.AppConstant.CHANNEL;
+import th.co.rocinante.bean.MessageBean;
 import th.co.rocinante.entity.ChainCode;
+import th.co.rocinante.entity.Param;
 import th.co.rocinante.repository.ChainCodeRepository;
+import th.co.rocinante.repository.ParamRepository;
 
 @Service
 public class StorageService {
@@ -29,6 +36,7 @@ public class StorageService {
 	
 	@Autowired RunDeCommandService runDeCommand;
 	@Autowired ChainCodeRepository chaincodeRepos;
+	@Autowired ParamRepository paramRepos;
 	
 	public String unzipAndKeep(MultipartFile file) {
 		String result = "0";
@@ -78,7 +86,7 @@ public class StorageService {
 	}
 	
 	@Transactional
-	public String unzipAndKeepAndDeployChaincode(MultipartFile file, String chaincodeName, String version) {
+	public String unzipAndKeepAndDeployChaincode(MultipartFile file, String chaincodeName, String version, String argument, String endorsePolicy) {
 		String result = unzipAndKeep(file);
 		if("0".equals(result)) {
 			String foldername = file.getOriginalFilename();
@@ -92,6 +100,31 @@ public class StorageService {
 			chainCode.setVersion(version);
 			
 			chaincodeRepos.save(chainCode);
+			List<String> orgs = new ArrayList<>();
+			orgs.add(AppConstant.ORG.P0INDUSTRY);
+			orgs.add(AppConstant.ORG.P1INDUSTRY);
+			orgs.add(AppConstant.ORG.P0KRUNGTHAI);
+			orgs.add(AppConstant.ORG.P1KRUNGTHAI);
+			orgs.add(AppConstant.ORG.P0COMMERCE);
+			orgs.add(AppConstant.ORG.P1COMMERCE);
+			orgs.add(AppConstant.ORG.P0POLICE);
+			orgs.add(AppConstant.ORG.P1POLICE);
+			
+			//export param && install chaincode
+			String exportChannel = "docker exec -it cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
+			runDeCommand.run(exportChannel);
+			for (String peer : orgs) {
+				List<Param> industyParams = paramRepos.findByGroup(peer);
+				for (Param param : industyParams) {
+					String cmd = "docker exec -it cli export "+param.getCode()+"="+param.getValue();
+					runDeCommand.run(cmd);
+				}
+				String execInstallChaincode = "docker exec -it cli peer chaincode install -n "+chaincodeName+" -v "+version+" -p github.com/chaincode/upload/"+foldername;
+				runDeCommand.run(execInstallChaincode);
+			}
+			
+			String execIntantiated = "docker exec -it cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c "+argument+" -P \""+endorsePolicy+"\"";
+			runDeCommand.run(execIntantiated);
 			
 		}
 		

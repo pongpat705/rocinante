@@ -2,17 +2,15 @@ package th.co.rocinante;
 
 public class AppConstant {
 
-	public static class BASE_COMMAND {
-		public static String SPACE =" ";
-		public static String CLI = "docker exec -it cli";
-		public static String EXPORT ="export";
-	}
-	
 	public static class ORG {
-		public static String INDUSTRY = "INDUSTRY";
-		public static String KRUNGTHAI = "KRUNGTHAI";
-		public static String COMMERCE = "COMMERCE";
-		public static String POLICE = "POLICE";
+		public static String P0INDUSTRY = "P0INDUSTRY";
+		public static String P1INDUSTRY = "P1INDUSTRY";
+		public static String P0KRUNGTHAI = "P0KRUNGTHAI";
+		public static String P1KRUNGTHAI = "P1KRUNGTHAI";
+		public static String P0COMMERCE = "P0COMMERCE";
+		public static String P1COMMERCE = "P1COMMERCE";
+		public static String P0POLICE = "P0POLICE";
+		public static String P1POLICE = "P1POLICE";
 	}
 	
 	public static class CHANNEL {

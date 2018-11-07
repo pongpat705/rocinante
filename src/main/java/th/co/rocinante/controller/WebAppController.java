@@ -40,14 +40,16 @@ public class WebAppController {
 	}
 	
 	@PostMapping("/upload")
-	public String upload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("chaincodeName") String chaincodeName, @RequestParam("version") String version,
+	public String upload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("chaincodeName") String chaincodeName,
+			@RequestParam("version") String version, @RequestParam("argument") String argument,
+			@RequestParam("endorsePolicy") String endorsePolicy,
             RedirectAttributes redirectAttributes){
 		
 		String result = "";
 		
 		try {
 			
-			result = storageService.unzipAndKeepAndDeployChaincode(file, chaincodeName, version);
+			result = storageService.unzipAndKeepAndDeployChaincode(file, chaincodeName, version, argument, endorsePolicy);
 			
 		} catch (Exception e) {
 			result = e.getMessage();

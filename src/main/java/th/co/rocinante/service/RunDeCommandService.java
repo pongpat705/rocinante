@@ -40,12 +40,14 @@ public class RunDeCommandService {
 	            log.info("Here is the standard output of the command");
 	            while ((s = stdInput.readLine()) != null) {
 	            	output.add(s);
+	            	System.out.println(s);
 	            }
 	            
 	            // read any errors from the attempted command
 	            log.info("Here is the standard error of the command (if any)");
 	            while ((s = stdError.readLine()) != null) {
 	            	error.add(s);
+	            	System.out.println(s);
 	            }
 	            
 	        }
