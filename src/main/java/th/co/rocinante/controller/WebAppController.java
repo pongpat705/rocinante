@@ -3,6 +3,8 @@ package th.co.rocinante.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,8 @@ public class WebAppController {
 	@RequestMapping("/")
 	public String index(Model model){
 		
+		List<String> output = new ArrayList<>();
+		List<String> error = new ArrayList<>();
 		String s = null;
 		try {
             
@@ -30,12 +34,14 @@ public class WebAppController {
 	            // read the output from the command
 	            System.out.println("Here is the standard output of the command:\n");
 	            while ((s = stdInput.readLine()) != null) {
+	            	output.add(s);
 	                System.out.println(s);
 	            }
 	            
 	            // read any errors from the attempted command
 	            System.out.println("Here is the standard error of the command (if any):\n");
 	            while ((s = stdError.readLine()) != null) {
+	            	error.add(s);
 	                System.out.println(s);
 	            }
 	            
@@ -47,7 +53,7 @@ public class WebAppController {
 //	            System.exit(-1);
 	        }
 		
-		model.addAttribute("dockerContainers", s);
+		model.addAttribute("dockerContainers", output);
 		
 		return "index";
 	}
