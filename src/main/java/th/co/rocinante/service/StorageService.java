@@ -1,21 +1,19 @@
 package th.co.rocinante.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import net.lingala.zip4j.core.ZipFile;
 
 @Service
 public class StorageService {
@@ -31,9 +29,7 @@ public class StorageService {
 			IOUtils.copy(file.getInputStream(), o);
 			o.close();
 			
-			String foldername = file.getName();
-			
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(zip));
+			String foldername = file.getOriginalFilename();
 			
 			File uploadPath = new File(localfolder);
 			
@@ -48,34 +44,8 @@ public class StorageService {
 				chaincodPath.mkdirs();
 			}
 			if(chaincodPath.exists()) {
-				byte[] buffer = new byte[1024];
-				ZipEntry ze = zis.getNextEntry();
-				while(ze!=null){
-	    			
-		    	   String fileName = ze.getName();
-		           File newFile = new File(sChaincodePath + File.separator + fileName);
-		                
-		           System.out.println("file unzip : "+ newFile.getAbsoluteFile());
-		                
-		            //create all non exists folders
-		            //else you will hit FileNotFoundException for compressed folder
-		            new File(newFile.getParent()).mkdirs();
-		              
-		            FileOutputStream fos = new FileOutputStream(newFile);             
-
-		            int len;
-		            while ((len = zis.read(buffer)) > 0) {
-		       		fos.write(buffer, 0, len);
-		            }
-		        		
-		            fos.close();   
-		            ze = zis.getNextEntry();
-		            
-			    }
-			    	
-			        zis.closeEntry();
-			    	zis.close();
-			    		
+				ZipFile zipFile = new ZipFile(zip);
+		        zipFile.extractAll(sChaincodePath);
 			}
 			
 		} catch (FileNotFoundException e) {
@@ -85,6 +55,9 @@ public class StorageService {
 			result = e.getMessage();
 			e.printStackTrace();
 		} catch (IOException e) {
+			result = e.getMessage();
+			e.printStackTrace();
+		} catch (net.lingala.zip4j.exception.ZipException e) {
 			result = e.getMessage();
 			e.printStackTrace();
 		}
