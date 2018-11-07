@@ -10,8 +10,8 @@ import th.co.rocinante.entity.ParamApp;
 @Repository
 public interface ParamRepository extends JpaRepository<ParamApp, Long> {
 	
-	List<ParamApp> findByGroup(@org.springframework.data.repository.query.Param(value = "group") String group);
+	List<ParamApp> findByGroupCode(@org.springframework.data.repository.query.Param(value = "groupCode") String groupCode);
 	
-	ParamApp findByGroupAndCode(@org.springframework.data.repository.query.Param(value = "group") String group, @org.springframework.data.repository.query.Param(value = "code") String code);
+	ParamApp findByGroupCodeAndCode(@org.springframework.data.repository.query.Param(value = "groupCode") String groupCode, @org.springframework.data.repository.query.Param(value = "code") String code);
 
 }

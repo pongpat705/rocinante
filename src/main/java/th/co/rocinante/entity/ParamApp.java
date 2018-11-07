@@ -13,23 +13,17 @@ public class ParamApp {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String group;
+	private String groupCode;
 	private String code;
 	private String data;
 	public Long getId() {
 		return id;
-	}
-	public String getGroup() {
-		return group;
 	}
 	public String getCode() {
 		return code;
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public void setGroup(String group) {
-		this.group = group;
 	}
 	public void setCode(String code) {
 		this.code = code;
@@ -39,5 +33,11 @@ public class ParamApp {
 	}
 	public void setData(String data) {
 		this.data = data;
+	}
+	public String getGroupCode() {
+		return groupCode;
+	}
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
 	}
 }

@@ -113,7 +113,7 @@ public class StorageService {
 			String exportChannel = "docker exec -it cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
 			runDeCommand.run(exportChannel);
 			for (String peer : orgs) {
-				List<ParamApp> industyParams = paramRepos.findByGroup(peer);
+				List<ParamApp> industyParams = paramRepos.findByGroupCode(peer);
 				for (ParamApp param : industyParams) {
 					String cmd = "docker exec -it cli export "+param.getCode()+"="+param.getData();
 					runDeCommand.run(cmd);
