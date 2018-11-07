@@ -15,7 +15,7 @@ public class ParamApp {
 	private Long id;
 	private String group;
 	private String code;
-	private String value;
+	private String data;
 	public Long getId() {
 		return id;
 	}
@@ -24,9 +24,6 @@ public class ParamApp {
 	}
 	public String getCode() {
 		return code;
-	}
-	public String getValue() {
-		return value;
 	}
 	public void setId(Long id) {
 		this.id = id;
@@ -37,7 +34,10 @@ public class ParamApp {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public void setValue(String value) {
-		this.value = value;
+	public String getData() {
+		return data;
+	}
+	public void setData(String data) {
+		this.data = data;
 	}
 }

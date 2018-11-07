@@ -115,7 +115,7 @@ public class StorageService {
 			for (String peer : orgs) {
 				List<ParamApp> industyParams = paramRepos.findByGroup(peer);
 				for (ParamApp param : industyParams) {
-					String cmd = "docker exec -it cli export "+param.getCode()+"="+param.getValue();
+					String cmd = "docker exec -it cli export "+param.getCode()+"="+param.getData();
 					runDeCommand.run(cmd);
 				}
 				String execInstallChaincode = "docker exec -it cli peer chaincode install -n "+chaincodeName+" -v "+version+" -p github.com/chaincode/upload/"+foldername;
