@@ -48,7 +48,7 @@ public class WebAppController {
 		
 		model.addAttribute("result", result);
 		
-		return "index";
+		return "redirect:/";
 	}
 	
 	@GetMapping("/upload")
