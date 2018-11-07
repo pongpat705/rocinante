@@ -22,9 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import net.lingala.zip4j.core.ZipFile;
 import th.co.rocinante.AppConstant;
 import th.co.rocinante.AppConstant.CHANNEL;
-import th.co.rocinante.bean.MessageBean;
 import th.co.rocinante.entity.ChainCode;
-import th.co.rocinante.entity.Param;
+import th.co.rocinante.entity.ParamApp;
 import th.co.rocinante.repository.ChainCodeRepository;
 import th.co.rocinante.repository.ParamRepository;
 
@@ -114,8 +113,8 @@ public class StorageService {
 			String exportChannel = "docker exec -it cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
 			runDeCommand.run(exportChannel);
 			for (String peer : orgs) {
-				List<Param> industyParams = paramRepos.findByGroup(peer);
-				for (Param param : industyParams) {
+				List<ParamApp> industyParams = paramRepos.findByGroup(peer);
+				for (ParamApp param : industyParams) {
 					String cmd = "docker exec -it cli export "+param.getCode()+"="+param.getValue();
 					runDeCommand.run(cmd);
 				}

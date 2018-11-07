@@ -7,8 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="PARAM")
-public class Param {
+@Table(name="PARAM_APP")
+public class ParamApp {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

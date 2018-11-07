@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import th.co.rocinante.entity.Param;
+import th.co.rocinante.entity.ParamApp;
 
 @Repository
-public interface ParamRepository extends JpaRepository<Param, Long> {
+public interface ParamRepository extends JpaRepository<ParamApp, Long> {
 	
-	List<Param> findByGroup(@org.springframework.data.repository.query.Param(value = "group") String group);
+	List<ParamApp> findByGroup(@org.springframework.data.repository.query.Param(value = "group") String group);
 	
-	Param findByGroupAndCode(@org.springframework.data.repository.query.Param(value = "group") String group, @org.springframework.data.repository.query.Param(value = "code") String code);
+	ParamApp findByGroupAndCode(@org.springframework.data.repository.query.Param(value = "group") String group, @org.springframework.data.repository.query.Param(value = "code") String code);
 
 }
