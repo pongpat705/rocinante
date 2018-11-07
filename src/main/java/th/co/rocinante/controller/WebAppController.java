@@ -27,28 +27,9 @@ public class WebAppController {
 		MessageBean messageBean = runExec.run("docker ps -a");
 		
 		model.addAttribute("dockerContainers", messageBean);
+		model.addAttribute("result", "");
 		
 		return "index";
-	}
-	
-	@PostMapping("/upload")
-	public String upload(Model model, @RequestParam("file") MultipartFile file,
-            RedirectAttributes redirectAttributes){
-		
-		String result = "";
-		
-		try {
-			
-			result = storageService.unzipAndKeep(file);
-			
-		} catch (Exception e) {
-			result = e.getMessage();
-			e.printStackTrace();
-		}
-		
-		model.addAttribute("result", result);
-		
-		return "redirect:/";
 	}
 	
 	@GetMapping("/upload")
@@ -58,5 +39,24 @@ public class WebAppController {
 		return "upload";
 	}
 	
+	@PostMapping("/upload")
+	public String upload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("chaincodeName") String chaincodeName, @RequestParam("version") String version,
+            RedirectAttributes redirectAttributes){
+		
+		String result = "";
+		
+		try {
+			
+			result = storageService.unzipAndKeepAndDeployChaincode(file, chaincodeName, version);
+			
+		} catch (Exception e) {
+			result = e.getMessage();
+			e.printStackTrace();
+		}
+		
+		redirectAttributes.addAttribute("result", result);
+		
+		return "redirect:/";
+	}
 	
 }
