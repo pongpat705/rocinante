@@ -5,17 +5,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <p th:text="'Hello, ' + ${hello} + '!'" />
+<!--     <p th:text="'Hello, ' + ${hello} + '!'" /> -->
 
-	<form action="#" th:action="@{/add}" th:object="${todo}" method="post">
-	  <fieldset>
-	    <input type="text" name="title" />
-	    <input type="submit" value="Add"/>
-	  </fieldset>
-	</form>
+<!-- 	<form action="#" th:action="@{/add}" th:object="${todo}" method="post"> -->
+<!-- 	  <fieldset> -->
+<!-- 	    <input type="text" name="title" /> -->
+<!-- 	    <input type="submit" value="Add"/> -->
+<!-- 	  </fieldset> -->
+<!-- 	</form> -->
     <ul>
-    	<li th:each="todo : ${TODO_LIST}" >
-    		<p th:text="${todo.title}"></p>
+    	<li th:each="s : ${dockerContainers}" >
+    		<p th:text="${s}"></p>
     	</li>
     </ul>
     
