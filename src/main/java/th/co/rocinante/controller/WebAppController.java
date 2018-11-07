@@ -39,12 +39,12 @@ public class WebAppController {
 	                System.out.println(s);
 	            }
 	            
-	            System.exit(0);
+//	            System.exit(0);
 	        }
 	        catch (IOException e) {
 	            System.out.println("exception happened - here's what I know: ");
 	            e.printStackTrace();
-	            System.exit(-1);
+//	            System.exit(-1);
 	        }
 		
 		model.addAttribute("dockerContainers", s);
