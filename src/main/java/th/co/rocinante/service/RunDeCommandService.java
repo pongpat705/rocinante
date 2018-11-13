@@ -69,8 +69,11 @@ public class RunDeCommandService {
 	}
 	
 	public MessageBean run(String[] command) {
-		log.info("running a command : {} ",command.toString());
-		
+		String cxmd = "";
+		for (String string : command) {
+			cxmd += string+" ";
+		}
+		log.info("running a command : {} ",cxmd);
 		MessageBean result = new MessageBean();
 		
 		List<String> output = new ArrayList<>();
