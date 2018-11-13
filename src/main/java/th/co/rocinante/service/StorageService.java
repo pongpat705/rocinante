@@ -151,19 +151,19 @@ public class StorageService {
 				String resultPeparingScript = peparingCommandeInstallInstantiatedScript(chaincodeName, version, foldername, argument, endorsePolicy, CHANNEL.CERT_CHANNEL);
 				if("0".equals(resultPeparingScript)) {
 					
-					String mode = "instantiated";
-					if(!"1.0".equals(version)) {
-						mode = "upgraded";
-					}
-					//export param && install chaincode
-					String[] runScript = {"./home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-"+chaincodeName+version+".sh"};
-					MessageBean rs = runDeCommand.run(runScript);
-					for (String e : rs.getOutput()) {
-						log.info(e);
-					}
-					for (String e : rs.getError()) {
-						log.info(e);
-					}
+//					String mode = "instantiated";
+//					if(!"1.0".equals(version)) {
+//						mode = "upgraded";
+//					}
+//					//export param && install chaincode
+//					String[] runScript = {"./home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-"+chaincodeName+version+".sh"};
+//					MessageBean rs = runDeCommand.run(runScript);
+//					for (String e : rs.getOutput()) {
+//						log.info(e);
+//					}
+//					for (String e : rs.getError()) {
+//						log.info(e);
+//					}
 				}
 				
 			}
