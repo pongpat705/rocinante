@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.spotify.docker.client.exceptions.DockerException;
+
 import th.co.rocinante.bean.MessageBean;
 import th.co.rocinante.service.RunDeCommandService;
 import th.co.rocinante.service.StorageService;
@@ -21,10 +23,12 @@ public class WebAppController {
 	@Autowired StorageService storageService;
 	
 	@RequestMapping("/")
-	public String index(Model model){
+	public String index(Model model) throws DockerException, InterruptedException{
 		
 		
-		MessageBean messageBean = runExec.run("docker ps -a");
+//		MessageBean messageBean = runExec.run("docker ps -a");
+		MessageBean messageBean = new MessageBean();
+		runExec.listContainners();
 		
 		model.addAttribute("dockerContainers", messageBean);
 		model.addAttribute("result", "");
