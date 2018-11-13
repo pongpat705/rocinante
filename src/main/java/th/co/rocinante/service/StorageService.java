@@ -184,7 +184,7 @@ public class StorageService {
 						mode = "upgraded";
 					}
 					//export param && install chaincode
-					String[] runScript = {"./home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&"+mode+"-"+chaincodeName+version+".sh"};
+					String[] runScript = {"./home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-"+chaincodeName+version+".sh"};
 					MessageBean rs = runDeCommand.run(runScript);
 					for (String e : rs.getOutput()) {
 						log.info(e);
@@ -243,13 +243,13 @@ public class StorageService {
 		}
 		try {
 			String content;
-			content = readFile("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&"+mode+"-template.sh", Charset.defaultCharset());
+			content = readFile("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-template.sh", Charset.defaultCharset());
 			content = content.replaceAll("\\{scriptfile\\}", "./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh");
 			content = content.replaceAll("\\{channel\\}", channel);
 			content = content.replaceAll("\\{version\\}", version);
 			content = content.replaceAll("\\{argument\\}", argument);
 			content = content.replaceAll("\\{endorse_policy\\}", endorsPolicy);
-			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&"+mode+"-"+chaincodeName+version+".sh";
+			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-"+chaincodeName+version+".sh";
 			org.apache.commons.io.FileUtils.writeStringToFile(new File(destinationPath), content);
 			File file = new File(destinationPath);
 			if(!file.exists()) {
