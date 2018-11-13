@@ -69,13 +69,13 @@ public class RunDeCommandService {
 	}
 	
 	public void listContainners() throws DockerException, InterruptedException {
-		final DockerClient docker = DefaultDockerClient.builder()
+		final DockerClient docker = new DefaultDockerClient("unix:///var/run/docker.sock");
 				  // Set various options
-				.build();
 		final List<Container> containers = docker.listContainers();
 		for (Container container : containers) {
 			log.info("image id : {} , image status: {}",container.id(),container.status());
 		}
+		docker.close();
 	}
 	
 	public MessageBean runSpotifyExec(String[] command) throws DockerException, InterruptedException {
