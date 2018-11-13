@@ -159,41 +159,41 @@ public class StorageService {
 			
 			String resultPeparingFile = peparingInstallScript(chaincodeName, version, foldername);
 			if("0".equals(resultPeparingFile)) {
-				ChainCode chainCode = new ChainCode();
-				chainCode.setChaincodeName(chaincodeName);
-				chainCode.setCreateDate(new Date());
-				chainCode.setPath(sChaincodePath);
-				chainCode.setVersion(version);
 				
-				chaincodeRepos.save(chainCode);
-				List<String> orgs = new ArrayList<>();
-				orgs.add(AppConstant.ORG.P0INDUSTRY);
-				orgs.add(AppConstant.ORG.P1INDUSTRY);
-				orgs.add(AppConstant.ORG.P0KRUNGTHAI);
-				orgs.add(AppConstant.ORG.P1KRUNGTHAI);
-				orgs.add(AppConstant.ORG.P0COMMERCE);
-				orgs.add(AppConstant.ORG.P1COMMERCE);
-				orgs.add(AppConstant.ORG.P0POLICE);
-				orgs.add(AppConstant.ORG.P1POLICE);
+				String resultPeparingScript = peparingCommandeInstallInstantiatedScript(chaincodeName, version, foldername, argument, endorsePolicy, CHANNEL.CERT_CHANNEL);
+				if("0".equals(resultPeparingScript)) {
+					ChainCode chainCode = new ChainCode();
+					chainCode.setChaincodeName(chaincodeName);
+					chainCode.setCreateDate(new Date());
+					chainCode.setPath(sChaincodePath);
+					chainCode.setVersion(version);
+					
+					chaincodeRepos.save(chainCode);
+					List<String> orgs = new ArrayList<>();
+					orgs.add(AppConstant.ORG.P0INDUSTRY);
+					orgs.add(AppConstant.ORG.P1INDUSTRY);
+					orgs.add(AppConstant.ORG.P0KRUNGTHAI);
+					orgs.add(AppConstant.ORG.P1KRUNGTHAI);
+					orgs.add(AppConstant.ORG.P0COMMERCE);
+					orgs.add(AppConstant.ORG.P1COMMERCE);
+					orgs.add(AppConstant.ORG.P0POLICE);
+					orgs.add(AppConstant.ORG.P1POLICE);
+					
+					String mode = "instantiated";
+					if(!"1.0".equals(version)) {
+						mode = "upgraded";
+					}
+					//export param && install chaincode
+					String[] runScript = {"./home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&"+mode+"-"+chaincodeName+version+".sh"};
+					MessageBean rs = runDeCommand.run(runScript);
+					for (String e : rs.getOutput()) {
+						log.info(e);
+					}
+					for (String e : rs.getError()) {
+						log.info(e);
+					}
+				}
 				
-				//export param && install chaincode
-				String[] runScript = {"docker","exec","-i","cli","/bin/bash","./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh"};
-				MessageBean rs = runDeCommand.run(runScript);
-				for (String e : rs.getOutput()) {
-					log.info(e);
-				}
-				for (String e : rs.getError()) {
-					log.info(e);
-				}
-				
-				String execIntantiated = "docker exec cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c '"+argument+"' -P \""+endorsePolicy+"\"";
-				MessageBean ei =runDeCommand.run(execIntantiated);
-				for (String e : ei.getOutput()) {
-					log.info(e);
-				}
-				for (String e : ei.getError()) {
-					log.info(e);
-				}
 			}
 			
 		}
@@ -237,15 +237,19 @@ public class StorageService {
 	
 	public String peparingCommandeInstallInstantiatedScript(String chaincodeName, String version, String foldername, String argument, String endorsPolicy, String channel) throws InterruptedException {
 		String result = "0";
+		String mode = "instantiated";
+		if(!"1.0".equals(version)) {
+			mode = "upgraded";
+		}
 		try {
 			String content;
-			content = readFile("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&instantiated-template.sh", Charset.defaultCharset());
+			content = readFile("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&"+mode+"-template.sh", Charset.defaultCharset());
 			content = content.replaceAll("\\{scriptfile\\}", "./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh");
 			content = content.replaceAll("\\{channel\\}", channel);
 			content = content.replaceAll("\\{version\\}", version);
 			content = content.replaceAll("\\{argument\\}", argument);
 			content = content.replaceAll("\\{endorse_policy\\}", endorsPolicy);
-			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&instantiated-"+chaincodeName+version+".sh";
+			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&"+mode+"-"+chaincodeName+version+".sh";
 			org.apache.commons.io.FileUtils.writeStringToFile(new File(destinationPath), content);
 			File file = new File(destinationPath);
 			if(!file.exists()) {
