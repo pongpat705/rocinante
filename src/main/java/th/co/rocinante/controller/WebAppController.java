@@ -49,7 +49,7 @@ public class WebAppController {
 		
 		try {
 			
-			result = storageService.unzipAndKeepAndDeployChaincode(file, chaincodeName, version, argument, endorsePolicy);
+			result = storageService.unzipAndKeepAndDeployChaincodeViaScript(file, chaincodeName, version, argument, endorsePolicy);
 			
 		} catch (Exception e) {
 			result = e.getMessage();
