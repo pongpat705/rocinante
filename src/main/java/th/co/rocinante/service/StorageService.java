@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,8 +49,7 @@ public class StorageService {
 			IOUtils.copy(file.getInputStream(), o);
 			o.close();
 			
-			String foldername = file.getOriginalFilename();
-			foldername = foldername.replaceAll(".zip", "");
+			String foldername = getAFileName(file);
 			
 			File uploadPath = new File(localfolder);
 			
@@ -89,8 +91,7 @@ public class StorageService {
 	public String unzipAndKeepAndDeployChaincode(MultipartFile file, String chaincodeName, String version, String argument, String endorsePolicy) {
 		String result = unzipAndKeep(file);
 		if("0".equals(result)) {
-			String foldername = file.getOriginalFilename();
-			foldername = foldername.replaceAll(".zip", "");
+			String foldername = getAFileName(file);
 			String sChaincodePath = localfolder+"/"+foldername;
 			
 			ChainCode chainCode = new ChainCode();
@@ -111,7 +112,7 @@ public class StorageService {
 			orgs.add(AppConstant.ORG.P1POLICE);
 			
 			//export param && install chaincode
-			String exportChannel = "docker exec cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
+			String exportChannel = "docker exec -i cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
 			runDeCommand.run(exportChannel);
 			for (String peer : orgs) {
 				List<ParamApp> industyParams = paramRepos.findByGroupCode(peer);
@@ -147,5 +148,93 @@ public class StorageService {
 		}
 		
 		return result;
+	}
+	
+	@Transactional
+	public String unzipAndKeepAndDeployChaincodeViaScript(MultipartFile file, String chaincodeName, String version, String argument, String endorsePolicy) {
+		String result = unzipAndKeep(file);
+		if("0".equals(result)) {
+			String foldername = getAFileName(file);
+			String sChaincodePath = localfolder+"/"+foldername;
+			
+			String resultPeparingFile = peparingScriptFile(chaincodeName, version, foldername);
+			if("0".equals(resultPeparingFile)) {
+				ChainCode chainCode = new ChainCode();
+				chainCode.setChaincodeName(chaincodeName);
+				chainCode.setCreateDate(new Date());
+				chainCode.setPath(sChaincodePath);
+				chainCode.setVersion(version);
+				
+				chaincodeRepos.save(chainCode);
+				List<String> orgs = new ArrayList<>();
+				orgs.add(AppConstant.ORG.P0INDUSTRY);
+				orgs.add(AppConstant.ORG.P1INDUSTRY);
+				orgs.add(AppConstant.ORG.P0KRUNGTHAI);
+				orgs.add(AppConstant.ORG.P1KRUNGTHAI);
+				orgs.add(AppConstant.ORG.P0COMMERCE);
+				orgs.add(AppConstant.ORG.P1COMMERCE);
+				orgs.add(AppConstant.ORG.P0POLICE);
+				orgs.add(AppConstant.ORG.P1POLICE);
+				
+				//export param && install chaincode
+				String[] runScript = {"docker","exec","-i","cli","/bin/bash","\"./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh\""};
+				MessageBean rs = runDeCommand.run(runScript);
+				for (String e : rs.getOutput()) {
+					log.info(e);
+				}
+				for (String e : rs.getError()) {
+					log.info(e);
+				}
+				
+				String execIntantiated = "docker exec cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c '"+argument+"' -P \""+endorsePolicy+"\"";
+				MessageBean ei =runDeCommand.run(execIntantiated);
+				for (String e : ei.getOutput()) {
+					log.info(e);
+				}
+				for (String e : ei.getError()) {
+					log.info(e);
+				}
+			}
+			
+		}
+		
+		return result;
+	}
+	
+	public String peparingScriptFile(String chaincodeName, String version, String foldername) {
+		String result = "0";
+		try {
+			String content;
+			content = readFile("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-chaincode-certchannel-template.sh", Charset.defaultCharset());
+			content = content.replaceAll("\\{chaincode_name\\}", chaincodeName);
+			content = content.replaceAll("\\{folder_name\\}", foldername);
+			content = content.replaceAll("\\{version\\}", version);
+			org.apache.commons.io.FileUtils.writeStringToFile(new File("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh"), content);
+			String[] chmodCmd = {"chmod","u+x","/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh"};
+			MessageBean xx = runDeCommand.run(chmodCmd);
+			for (String e : xx.getOutput()) {
+				log.info(e);
+			}
+			for (String e : xx.getError()) {
+				result = e+"/n";
+				log.info(e);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			result = e.getMessage();
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String readFile(String path, Charset encoding)  throws IOException  {
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return new String(encoded, encoding);
+	}
+	
+	public String getAFileName(MultipartFile file) {
+		String foldername = file.getOriginalFilename();
+		return foldername.replaceAll(".zip", "");
 	}
 }
