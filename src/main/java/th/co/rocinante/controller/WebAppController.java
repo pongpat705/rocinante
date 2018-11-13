@@ -29,6 +29,8 @@ public class WebAppController {
 		model.addAttribute("dockerContainers", messageBean);
 		model.addAttribute("result", "");
 		
+		runExec.run("pwd");
+		
 		return "index";
 	}
 	
