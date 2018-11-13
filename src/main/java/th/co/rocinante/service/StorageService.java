@@ -151,7 +151,7 @@ public class StorageService {
 	}
 	
 	@Transactional
-	public String unzipAndKeepAndDeployChaincodeViaScript(MultipartFile file, String chaincodeName, String version, String argument, String endorsePolicy) {
+	public String unzipAndKeepAndDeployChaincodeViaScript(MultipartFile file, String chaincodeName, String version, String argument, String endorsePolicy) throws InterruptedException {
 		String result = unzipAndKeep(file);
 		if("0".equals(result)) {
 			String foldername = getAFileName(file);
@@ -201,7 +201,7 @@ public class StorageService {
 		return result;
 	}
 	
-	public String peparingScriptFile(String chaincodeName, String version, String foldername) {
+	public String peparingScriptFile(String chaincodeName, String version, String foldername) throws InterruptedException {
 		String result = "0";
 		try {
 			String content;
@@ -209,9 +209,16 @@ public class StorageService {
 			content = content.replaceAll("\\{chaincode_name\\}", chaincodeName);
 			content = content.replaceAll("\\{folder_name\\}", foldername);
 			content = content.replaceAll("\\{version\\}", version);
-			org.apache.commons.io.FileUtils.writeStringToFile(new File("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh"), content);
-			String[] chmodCmd = {"chmod","u+x","/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh"};
+			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh";
+			org.apache.commons.io.FileUtils.writeStringToFile(new File(destinationPath), content);
+			File file = new File(destinationPath);
+			if(!file.exists()) {
+				result = "file not found";
+			}
+			String[] chmodCmd = {"chmod","u+x",destinationPath};
 			MessageBean xx = runDeCommand.run(chmodCmd);
+			
+			Thread.sleep(4000);
 			for (String e : xx.getOutput()) {
 				log.info(e);
 			}
