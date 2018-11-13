@@ -24,7 +24,7 @@ public class RunDeCommandService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());	
 	
 	public MessageBean run(String command) {
-		
+		log.info("running command : {}",command);
 		MessageBean result = new MessageBean();
 		
 		List<String> output = new ArrayList<>();
