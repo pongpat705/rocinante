@@ -119,29 +119,29 @@ public class StorageService {
 					String cmd = "docker exec cli export "+param.getCode()+"="+param.getData();
 					MessageBean xx = runDeCommand.run(cmd);
 					for (String e : xx.getOutput()) {
-						System.out.println(e);
+						log.info(e);
 					}
 					for (String e : xx.getError()) {
-						System.out.println(e);
+						log.info(e);
 					}
 				}
 				String execInstallChaincode = "docker exec cli peer chaincode install -n "+chaincodeName+" -v "+version+" -p github.com/chaincode/upload/"+foldername;
 				MessageBean xx = runDeCommand.run(execInstallChaincode);
 				for (String e : xx.getOutput()) {
-					System.out.println(e);
+					log.info(e);
 				}
 				for (String e : xx.getError()) {
-					System.out.println(e);
+					log.info(e);
 				}
 			}
 			
 			String execIntantiated = "docker exec cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c '"+argument+"' -P \""+endorsePolicy+"\"";
 			MessageBean xx =runDeCommand.run(execIntantiated);
 			for (String e : xx.getOutput()) {
-				System.out.println(e);
+				log.info(e);
 			}
 			for (String e : xx.getError()) {
-				System.out.println(e);
+				log.info(e);
 			}
 			
 		}
