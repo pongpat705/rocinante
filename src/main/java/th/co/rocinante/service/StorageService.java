@@ -244,7 +244,7 @@ public class StorageService {
 		try {
 			String content;
 			content = readFile("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-template.sh", Charset.defaultCharset());
-			content = content.replaceAll("\\{scriptfile\\}", "./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh");
+			content = content.replaceAll("\\{scriptfile\\}", "\"./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh\"");
 			content = content.replaceAll("\\{channel\\}", channel);
 			content = content.replaceAll("\\{version\\}", version);
 			content = content.replaceAll("\\{argument\\}", "'"+argument+"'");
