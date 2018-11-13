@@ -157,7 +157,7 @@ public class StorageService {
 			String foldername = getAFileName(file);
 			String sChaincodePath = localfolder+"/"+foldername;
 			
-			String resultPeparingFile = peparingScriptFile(chaincodeName, version, foldername);
+			String resultPeparingFile = peparingInstallScript(chaincodeName, version, foldername);
 			if("0".equals(resultPeparingFile)) {
 				ChainCode chainCode = new ChainCode();
 				chainCode.setChaincodeName(chaincodeName);
@@ -177,7 +177,7 @@ public class StorageService {
 				orgs.add(AppConstant.ORG.P1POLICE);
 				
 				//export param && install chaincode
-				String[] runScript = {"docker","exec","-i","cli","/bin/bash","\"./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh\""};
+				String[] runScript = {"docker","exec","-i","cli","/bin/bash","./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh"};
 				MessageBean rs = runDeCommand.run(runScript);
 				for (String e : rs.getOutput()) {
 					log.info(e);
@@ -201,7 +201,7 @@ public class StorageService {
 		return result;
 	}
 	
-	public String peparingScriptFile(String chaincodeName, String version, String foldername) throws InterruptedException {
+	public String peparingInstallScript(String chaincodeName, String version, String foldername) throws InterruptedException {
 		String result = "0";
 		try {
 			String content;
@@ -210,6 +210,42 @@ public class StorageService {
 			content = content.replaceAll("\\{folder_name\\}", foldername);
 			content = content.replaceAll("\\{version\\}", version);
 			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh";
+			org.apache.commons.io.FileUtils.writeStringToFile(new File(destinationPath), content);
+			File file = new File(destinationPath);
+			if(!file.exists()) {
+				result = "file not found";
+			}
+			String[] chmodCmd = {"chmod","u+x",destinationPath};
+			MessageBean xx = runDeCommand.run(chmodCmd);
+			
+			Thread.sleep(4000);
+			for (String e : xx.getOutput()) {
+				log.info(e);
+			}
+			for (String e : xx.getError()) {
+				result = e+"/n";
+				log.info(e);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			result = e.getMessage();
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public String peparingCommandeInstallInstantiatedScript(String chaincodeName, String version, String foldername, String argument, String endorsPolicy, String channel) throws InterruptedException {
+		String result = "0";
+		try {
+			String content;
+			content = readFile("/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&instantiated-template.sh", Charset.defaultCharset());
+			content = content.replaceAll("\\{scriptfile\\}", "./scripts/install-chaincode-certchannel-"+chaincodeName+version+".sh");
+			content = content.replaceAll("\\{channel\\}", channel);
+			content = content.replaceAll("\\{version\\}", version);
+			content = content.replaceAll("\\{argument\\}", argument);
+			content = content.replaceAll("\\{endorse_policy\\}", endorsPolicy);
+			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install&instantiated-"+chaincodeName+version+".sh";
 			org.apache.commons.io.FileUtils.writeStringToFile(new File(destinationPath), content);
 			File file = new File(destinationPath);
 			if(!file.exists()) {
