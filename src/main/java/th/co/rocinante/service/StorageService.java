@@ -248,6 +248,7 @@ public class StorageService {
 			content = content.replaceAll("\\{channel\\}", channel);
 			content = content.replaceAll("\\{version\\}", version);
 			content = content.replaceAll("\\{argument\\}", argument);
+			content = content.replaceAll("\\{chaincode_name\\}", chaincodeName);
 			content = content.replaceAll("\\{endorse_policy\\}", endorsPolicy);
 			String destinationPath = "/home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-"+chaincodeName+version+".sh";
 			org.apache.commons.io.FileUtils.writeStringToFile(new File(destinationPath), content);
