@@ -19,14 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import net.lingala.zip4j.core.ZipFile;
-import th.co.rocinante.AppConstant.CHANNEL;
 import th.co.rocinante.bean.MessageBean;
 
 @Service
 public class StorageService {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());	
-	static String localfolder = "/home/osboxes/hyperledger/fabric-samples/chaincode/upload";
+	static String localfolder = "/home/osboxes/hyperledger/fabric-samples/new-cert-network/artifacts/src/upload";
 	
 	@Autowired RunDeCommandService runDeCommand;
 	
@@ -76,103 +75,6 @@ public class StorageService {
 		return result;
 	}
 	
-//	@Transactional
-//	public String unzipAndKeepAndDeployChaincode(MultipartFile file, String chaincodeName, String version, String argument, String endorsePolicy) {
-//		String result = unzipAndKeep(file);
-//		if("0".equals(result)) {
-//			String foldername = getAFileName(file);
-//			String sChaincodePath = localfolder+"/"+foldername;
-//			
-//			ChainCode chainCode = new ChainCode();
-//			chainCode.setChaincodeName(chaincodeName);
-//			chainCode.setCreateDate(new Date());
-//			chainCode.setPath(sChaincodePath);
-//			chainCode.setVersion(version);
-//			
-//			chaincodeRepos.save(chainCode);
-//			List<String> orgs = new ArrayList<>();
-//			orgs.add(AppConstant.ORG.P0INDUSTRY);
-//			orgs.add(AppConstant.ORG.P1INDUSTRY);
-//			orgs.add(AppConstant.ORG.P0KRUNGTHAI);
-//			orgs.add(AppConstant.ORG.P1KRUNGTHAI);
-//			orgs.add(AppConstant.ORG.P0COMMERCE);
-//			orgs.add(AppConstant.ORG.P1COMMERCE);
-//			orgs.add(AppConstant.ORG.P0POLICE);
-//			orgs.add(AppConstant.ORG.P1POLICE);
-//			
-//			//export param && install chaincode
-//			String exportChannel = "docker exec -i cli export CHANNEL_NAME="+CHANNEL.CERT_CHANNEL;
-//			runDeCommand.run(exportChannel);
-//			for (String peer : orgs) {
-//				List<ParamApp> industyParams = paramRepos.findByGroupCode(peer);
-//				for (ParamApp param : industyParams) {
-//					String cmd = "docker exec cli export "+param.getCode()+"="+param.getData();
-//					MessageBean xx = runDeCommand.run(cmd);
-//					for (String e : xx.getOutput()) {
-//						log.info(e);
-//					}
-//					for (String e : xx.getError()) {
-//						log.info(e);
-//					}
-//				}
-//				String execInstallChaincode = "docker exec cli peer chaincode install -n "+chaincodeName+" -v "+version+" -p github.com/chaincode/upload/"+foldername;
-//				MessageBean xx = runDeCommand.run(execInstallChaincode);
-//				for (String e : xx.getOutput()) {
-//					log.info(e);
-//				}
-//				for (String e : xx.getError()) {
-//					log.info(e);
-//				}
-//			}
-//			
-//			String execIntantiated = "docker exec cli peer chaincode instantiate -o orderer.cert.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/cert.com/orderers/orderer.cert.com/msp/tlscacerts/tlsca.cert.com-cert.pem -C "+CHANNEL.CERT_CHANNEL+" -n "+chaincodeName+" -v "+version+" -c '"+argument+"' -P \""+endorsePolicy+"\"";
-//			MessageBean xx =runDeCommand.run(execIntantiated);
-//			for (String e : xx.getOutput()) {
-//				log.info(e);
-//			}
-//			for (String e : xx.getError()) {
-//				log.info(e);
-//			}
-//			
-//		}
-//		
-//		return result;
-//	}
-	
-	public String unzipAndKeepAndDeployChaincodeViaScript(MultipartFile file, String chaincodeName, String version, String argument, String endorsePolicy) throws InterruptedException {
-		String result = unzipAndKeep(file);
-		if("0".equals(result)) {
-			String foldername = getAFileName(file);
-			String sChaincodePath = localfolder+"/"+foldername;
-			
-			String resultPeparingFile = peparingInstallScript(chaincodeName, version, foldername);
-			if("0".equals(resultPeparingFile)) {
-				
-				String resultPeparingScript = peparingCommandeInstallInstantiatedScript(chaincodeName, version, foldername, argument, endorsePolicy, CHANNEL.CERT_CHANNEL);
-				if("0".equals(resultPeparingScript)) {
-					
-//					String mode = "instantiated";
-//					if(!"1.0".equals(version)) {
-//						mode = "upgraded";
-//					}
-//					//export param && install chaincode
-//					String[] runScript = {"./home/osboxes/hyperledger/fabric-samples/CerT/scripts/install-"+mode+"-"+chaincodeName+version+".sh"};
-//					MessageBean rs = runDeCommand.run(runScript);
-//					for (String e : rs.getOutput()) {
-//						log.info(e);
-//					}
-//					for (String e : rs.getError()) {
-//						log.info(e);
-//					}
-				}
-				
-			}
-			
-		}
-		
-		return result;
-	}
-	
 	public String peparingInstallScript(String chaincodeName, String version, String foldername) throws InterruptedException {
 		String result = "0";
 		try {
@@ -191,13 +93,6 @@ public class StorageService {
 			MessageBean xx = runDeCommand.run(chmodCmd);
 			
 			Thread.sleep(4000);
-			for (String e : xx.getOutput()) {
-				log.info(e);
-			}
-			for (String e : xx.getError()) {
-				result = e+"/n";
-				log.info(e);
-			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			result = e.getMessage();
@@ -232,13 +127,6 @@ public class StorageService {
 			MessageBean xx = runDeCommand.run(chmodCmd);
 			
 			Thread.sleep(4000);
-			for (String e : xx.getOutput()) {
-				log.info(e);
-			}
-			for (String e : xx.getError()) {
-				result = e+"/n";
-				log.info(e);
-			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			result = e.getMessage();

@@ -1,24 +1,20 @@
 package th.co.rocinante.bean;
 
-import java.util.List;
-
 public class MessageBean {
 
-	private List<String> output;
-	private List<String> error;
-	
-	public List<String> getOutput() {
-		return output;
+	private Boolean success;
+	private String message;
+	public Boolean getSuccess() {
+		return success;
 	}
-	public List<String> getError() {
-		return error;
+	public String getMessage() {
+		return message;
 	}
-	public void setOutput(List<String> output) {
-		this.output = output;
+	public void setSuccess(Boolean success) {
+		this.success = success;
 	}
-	public void setError(List<String> error) {
-		this.error = error;
+	public void setMessage(String message) {
+		this.message = message;
 	}
-	
 	
 }

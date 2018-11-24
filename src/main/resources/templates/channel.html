@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+	<ul>
+    	<li><a th:href="@{/}">back</a></li>
+    	<li><a th:href="@{/upload}">install chaincode</a></li>
+    </ul>
+    <div>
+    	<p>Joined Channels</p>
+		<ul>
+	    	<li th:each="s : ${channelList.channels}" >
+	    		<p th:text="${s.channelId}"></p>
+	    	</li>
+	    </ul>
+	    <p>Installed Chaincodes</p>
+		<ul>
+	    	<li th:each="s : ${installedChaincodes}" >
+	    		<a th:href="@{/instantiate(chaincodeTxt=${s})}" th:text="${s}"></a>
+	    	</li>
+	    </ul>
+	    <p>Instantiated Chaincodes</p>
+		<ul>
+	    	<li th:each="s : ${instantiatedChaincodes}" >
+	    		<p th:text="${s}"></p>
+	    	</li>
+	    </ul>
+	</div>
+    
+</body>
+</html>

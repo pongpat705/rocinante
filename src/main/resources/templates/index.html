@@ -7,12 +7,9 @@
 <body>
 
 	<ul>
-    	<li><a th:href="@{/upload}">upload chaincode</a></li>
-    </ul>
-    <ul>
-    	<li th:each="s : ${dockerContainers.output}" >
-    		<p th:text="${s}"></p>
-    	</li>
+			<li th:each="s : ${peers}" >
+	    		<a th:href="@{/channels(peer=${s})}" th:text="${s}+':'+${orgName}"></a>
+	    	</li>
     </ul>
     
 </body>
