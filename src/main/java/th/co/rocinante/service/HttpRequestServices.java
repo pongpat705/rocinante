@@ -1,5 +1,7 @@
 package th.co.rocinante.service;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,7 @@ public class HttpRequestServices {
 	    headers.add("Content-Type", "application/json");
 	    headers.add("Authorization", "Bearer "+appParam.getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-	    ResponseEntity<ChannelList> responseEntity = rest.exchange("http://localhost:4000/channels?peer="+peer, HttpMethod.GET, requestEntity, ChannelList.class);
+	    ResponseEntity<ChannelList> responseEntity = rest.exchange("http://192.168.43.170:4000/channels?peer="+peer, HttpMethod.GET, requestEntity, ChannelList.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -48,7 +50,7 @@ public class HttpRequestServices {
 	    headers.add("Content-Type", "application/json");
 	    headers.add("Authorization", "Bearer "+appParam.getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-	    ResponseEntity<String[]> responseEntity = rest.exchange("http://localhost:4000/chaincodes?peer="+peer+"&type=installed", HttpMethod.GET, requestEntity, String[].class);
+	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/chaincodes?peer="+peer+"&type=installed", HttpMethod.GET, requestEntity, String[].class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -63,7 +65,7 @@ public class HttpRequestServices {
 	    headers.add("Content-Type", "application/json");
 	    headers.add("Authorization", "Bearer "+appParam.getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-	    ResponseEntity<String[]> responseEntity = rest.exchange("http://localhost:4000/chaincodes?peer="+peer+"&type=instantiated", HttpMethod.GET, requestEntity, String[].class);
+	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/chaincodes?peer="+peer+"&type=instantiated", HttpMethod.GET, requestEntity, String[].class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -80,7 +82,7 @@ public class HttpRequestServices {
 	    map.add("username", user);
 	    map.add("orgName", orgName);
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-	    ResponseEntity<Enroll> responseEntity = rest.exchange("http://localhost:4000/users", HttpMethod.POST, requestEntity, Enroll.class);
+	    ResponseEntity<Enroll> responseEntity = rest.exchange("http://192.168.43.170:4000/users", HttpMethod.POST, requestEntity, Enroll.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -89,7 +91,7 @@ public class HttpRequestServices {
 		
 	}
 	
-	public MessageBean InstallingChaincode(String chaincodeName, String chaincodePath, String chaincodeType, String chaincodeVersion) {
+	public MessageBean installingChaincode(String chaincodeName, String chaincodePath, String chaincodeType, String chaincodeVersion) {
 		RestTemplate rest = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.add("Content-Type", "application/json");
@@ -102,7 +104,23 @@ public class HttpRequestServices {
 	    obj.setChaincodeVersion(chaincodeVersion);
 	    
 		HttpEntity<InstallChaincode> requestEntity = new HttpEntity<InstallChaincode>(obj, headers);
-	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://localhost:4000/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);
+	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://192.168.43.170:4000/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);
+	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+	    	
+	    }
+	    log.info( responseEntity.getBody().toString());
+	    return responseEntity.getBody();
+		
+	}
+	
+	public MessageBean instantiatedChaincode(Map<String, Object> value) {
+		RestTemplate rest = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+	    headers.add("Content-Type", "application/json");
+	    headers.add("Authorization", "Bearer "+appParam.getToken());
+	    
+		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(value, headers);
+	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://192.168.43.170:4000/channels/"+appParam.getChannel()+"/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }

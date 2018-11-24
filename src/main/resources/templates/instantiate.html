@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+	<ul>
+    	<li><a th:href="@{/}">back</a></li>
+    </ul>
+    <div>
+		<form method="POST" action="/instantiate">
+			<table>
+				<tr><td>Chaincode name : <input type="text" name="chaincodeName" th:value="${chaincodeName}" readOnly/></td></tr>
+				<tr><td>Version : <input type="text" name="chaincodeVersion" th:value="${chaincodeVersion}" readOnly/></td></tr>
+				<tr><td>Type ( golang ) <input type="text" name="chaincodeType" th:value="${chaincodeType}" readOnly/></td></tr>
+				<tr><td>Peers <input type="text" name="peers" th:value="${peers}" readOnly/></td></tr>
+				<tr><td>Argument <input type="text" name="args" /></td></tr>
+				<tr><td>Policy <input type="text" name="endorsePolicy" /></td></tr>
+				<tr><td></td><td><input type="submit" /></td></tr>
+			</table>
+		</form>
+	</div>
+    
+</body>
+</html>

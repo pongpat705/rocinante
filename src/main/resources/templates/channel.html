@@ -20,7 +20,7 @@
 	    <p>Installed Chaincodes</p>
 		<ul>
 	    	<li th:each="s : ${installedChaincodes}" >
-	    		<a th:href="@{/instantiate(chaincodeTxt=${s})}" th:text="${s}"></a>
+	    		<a th:href="@{/instantiate(chaincodeTxt=${s}, peer=${peer})}" th:text="${s}"></a>
 	    	</li>
 	    </ul>
 	    <p>Instantiated Chaincodes</p>

@@ -17,7 +17,8 @@ public class AppGlobalParam {
 	String user;
 	@Value("${org.name}") 
 	String orgName;
-	
+	@Value("${channel}")
+	String channel;
 	@Value("${org.peers}") 
 	String[] peers;
 	
@@ -47,6 +48,10 @@ public class AppGlobalParam {
 
 	public String[] getPeers() {
 		return peers;
+	}
+
+	public String getChannel() {
+		return channel;
 	}
 
 
