@@ -3,18 +3,12 @@ package th.co.rocinante.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.exceptions.DockerException;
-import com.spotify.docker.client.messages.Container;
 
 import th.co.rocinante.bean.MessageBean;
 
@@ -62,8 +56,6 @@ public class RunDeCommandService {
 	            e.printStackTrace();
 	        }
 		
-		result.setError(error);
-		result.setOutput(output);
 		
 		return result;
 	}
@@ -111,8 +103,6 @@ public class RunDeCommandService {
 	            e.printStackTrace();
 	        }
 		
-		result.setError(error);
-		result.setOutput(output);
 		
 		return result;
 	}
