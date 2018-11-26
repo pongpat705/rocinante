@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,26 +40,27 @@ public class WebAppController {
 	
 	@RequestMapping("/")
 	public String index(Model model){
-		model.addAttribute("peers", appGlobal.getPeers());
-		model.addAttribute("orgName", appGlobal.getOrgName());
+		model.addAttribute("params", appGlobal.getParams());
+		model.addAttribute("orgNames", appGlobal.getOrgNames());
 		return "index";
 	}
 	
 	@GetMapping("/channels")
-	public String channels(Model model, @RequestParam String peer) {
-		ChannelList channelList = httpServices.getJoinedChannel(peer);
-		String[] installedChaincodes = httpServices.getInstalledChaincode(peer);
-		String[] instantiatedChaincodes = httpServices.getInstantiatedChaincode(peer);
+	public String channels(Model model, @RequestParam String peer, @RequestParam String org) {
+		ChannelList channelList = httpServices.getJoinedChannel(peer, org);
+		String[] installedChaincodes = httpServices.getInstalledChaincode(peer, org);
+		String[] instantiatedChaincodes = httpServices.getInstantiatedChaincode(peer, org);
 		model.addAttribute("channelList", channelList);
 		model.addAttribute("installedChaincodes", installedChaincodes);
 		model.addAttribute("instantiatedChaincodes", instantiatedChaincodes);
 		model.addAttribute("peer", peer);
+		model.addAttribute("org", org);
 		return "channel";
 	}
 	
 	@GetMapping("/upload")
-	public String uploadPage(){
-		
+	public String uploadPage(Model model, @RequestParam("org") String org){
+		model.addAttribute("org", org);
 		
 		return "upload";
 	}
@@ -69,7 +68,7 @@ public class WebAppController {
 	@PostMapping("/upload")
 	public String upload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("chaincodeName") String chaincodeName,
 			@RequestParam("version") String version, @RequestParam("type") String type,
-            RedirectAttributes redirectAttributes){
+            RedirectAttributes redirectAttributes, @RequestParam("org") String org){
 		
 		String result = "";
 		
@@ -77,7 +76,7 @@ public class WebAppController {
 			
 			result = storageService.unzipAndKeep(file);
 			String codeFolder = storageService.getAFileName(file);
-			MessageBean message = httpServices.installingChaincode(chaincodeName, "upload/"+codeFolder, type, version);
+			MessageBean message = httpServices.installingChaincode(chaincodeName, "upload/"+codeFolder, type, version, org);
 			if(!message.getSuccess()) {
 				throw new Exception(message.getMessage());
 			}
@@ -94,7 +93,7 @@ public class WebAppController {
 	}
 	
 	@GetMapping("/instantiate")
-	public String instantiate(@RequestParam String chaincodeTxt, @RequestParam String peer, Model model){
+	public String instantiate(@RequestParam String chaincodeTxt, @RequestParam String peer, Model model, @RequestParam("org") String org){
 		String name = chaincodeTxt;
 		String[] artifacts = name.split(",");
 		Map<String, String> params = new HashMap<>();
@@ -119,6 +118,7 @@ public class WebAppController {
 		params.put("chaincodeType", "golang");
 		params.put("peers", peer);
 		model.addAllAttributes(params);
+		model.addAttribute(org, org);
 		
 		return "instantiate";
 	}
@@ -129,7 +129,7 @@ public class WebAppController {
 	public String instantiatePost(@RequestBody MultiValueMap<String, String> formData) throws IOException{
 		Map<String, Object> toJson = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper();
-		
+		String org = "";
 		for (String k : formData.keySet()) {
 			if("args".equals(k) || "peers".equals(k)) {
 				String[] param = formData.getFirst(k).split(",");
@@ -140,14 +140,16 @@ public class WebAppController {
 				Map<String, Object> xx = mapper.readValue(param, typeRef);
 				toJson.put(k, xx);
 			}else {
-				toJson.put(k, formData.getFirst(k));
+				if(!"org".equals(k)) {
+					toJson.put(k, formData.getFirst(k));
+				}
 			}
 			
 		}
 		String xx = mapper.writeValueAsString(toJson);
 		log.info(xx);
 		
-		MessageBean message = httpServices.instantiatedChaincode(toJson);
+		MessageBean message = httpServices.instantiatedChaincode(toJson, org);
 			
 		
 		return "redirect:/";

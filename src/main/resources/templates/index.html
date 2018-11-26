@@ -5,12 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
+				[[${params}]]
+				<ul >
+					<li th:each="s : ${params}">
+						<p th:text="${s.orgName}"></p>
+						<ul >
+							<li th:each="p : ${s.peers}">
+								<a  th:href="@{/channels(peer=${p},org=${s.orgName})}" th:text="${p}+':'+${s.orgName}"></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
 
-	<ul>
-			<li th:each="s : ${peers}" >
-	    		<a th:href="@{/channels(peer=${s})}" th:text="${s}+':'+${orgName}"></a>
-	    	</li>
-    </ul>
     
 </body>
 </html>

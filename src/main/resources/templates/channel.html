@@ -8,7 +8,7 @@
 
 	<ul>
     	<li><a th:href="@{/}">back</a></li>
-    	<li><a th:href="@{/upload}">install chaincode</a></li>
+    	<li><a th:href="@{/upload(org=${org})}">install chaincode</a></li>
     </ul>
     <div>
     	<p>Joined Channels</p>
@@ -20,7 +20,7 @@
 	    <p>Installed Chaincodes</p>
 		<ul>
 	    	<li th:each="s : ${installedChaincodes}" >
-	    		<a th:href="@{/instantiate(chaincodeTxt=${s}, peer=${peer})}" th:text="${s}"></a>
+	    		<a th:href="@{/instantiate(chaincodeTxt=${s}, peer=${peer}, org=${org})}" th:text="${s}"></a>
 	    	</li>
 	    </ul>
 	    <p>Instantiated Chaincodes</p>

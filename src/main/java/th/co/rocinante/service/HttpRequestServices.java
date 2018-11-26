@@ -29,11 +29,11 @@ public class HttpRequestServices {
 	@Autowired AppGlobalParam appParam;
 
 	
-	public ChannelList getJoinedChannel(String peer) {
+	public ChannelList getJoinedChannel(String peer, String org) {
 		RestTemplate rest = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.add("Content-Type", "application/json");
-	    headers.add("Authorization", "Bearer "+appParam.getToken());
+	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
 	    ResponseEntity<ChannelList> responseEntity = rest.exchange("http://192.168.43.170:4000/channels?peer="+peer, HttpMethod.GET, requestEntity, ChannelList.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
@@ -44,11 +44,11 @@ public class HttpRequestServices {
 		
 	}
 	
-	public String[] getInstalledChaincode(String peer) {
+	public String[] getInstalledChaincode(String peer, String org) {
 		RestTemplate rest = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.add("Content-Type", "application/json");
-	    headers.add("Authorization", "Bearer "+appParam.getToken());
+	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
 	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/chaincodes?peer="+peer+"&type=installed", HttpMethod.GET, requestEntity, String[].class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
@@ -59,11 +59,11 @@ public class HttpRequestServices {
 		
 	}
 	
-	public String[] getInstantiatedChaincode(String peer) {
+	public String[] getInstantiatedChaincode(String peer, String org) {
 		RestTemplate rest = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.add("Content-Type", "application/json");
-	    headers.add("Authorization", "Bearer "+appParam.getToken());
+	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
 	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/channels/"+appParam.getChannel()+"/chaincodes?peer="+peer, HttpMethod.GET, requestEntity, String[].class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
@@ -91,13 +91,13 @@ public class HttpRequestServices {
 		
 	}
 	
-	public MessageBean installingChaincode(String chaincodeName, String chaincodePath, String chaincodeType, String chaincodeVersion) {
+	public MessageBean installingChaincode(String chaincodeName, String chaincodePath, String chaincodeType, String chaincodeVersion, String org) {
 		RestTemplate rest = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.add("Content-Type", "application/json");
-	    headers.add("Authorization", "Bearer "+appParam.getToken());
+	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 	    InstallChaincode obj = new InstallChaincode();
-	    obj.setPeers(appParam.getPeers());
+	    obj.setPeers(appParam.getApiParam().get(org).getPeers());
 	    obj.setChaincodeName(chaincodeName);
 	    obj.setChaincodePath(chaincodePath);
 	    obj.setChaincodeType(chaincodeType);
@@ -113,11 +113,11 @@ public class HttpRequestServices {
 		
 	}
 	
-	public MessageBean instantiatedChaincode(Map<String, Object> value) {
+	public MessageBean instantiatedChaincode(Map<String, Object> value, String org) {
 		RestTemplate rest = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.add("Content-Type", "application/json");
-	    headers.add("Authorization", "Bearer "+appParam.getToken());
+	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 	    
 		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(value, headers);
 	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://192.168.43.170:4000/channels/"+appParam.getChannel()+"/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);

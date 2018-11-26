@@ -1,5 +1,7 @@
 package th.co.rocinante.bean;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -9,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class InstallChaincode {
 
 	@JsonProperty("peers")
-	private String[] peers = null;
+	private String[] peers;
 	@JsonProperty("chaincodeName")
 	private String chaincodeName;
 	@JsonProperty("chaincodePath")
