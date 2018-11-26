@@ -65,7 +65,7 @@ public class HttpRequestServices {
 	    headers.add("Content-Type", "application/json");
 	    headers.add("Authorization", "Bearer "+appParam.getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/chaincodes?peer="+peer+"&type=instantiated", HttpMethod.GET, requestEntity, String[].class);
+	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/channels/"+appParam.getChannel()+"/chaincodes?peer="+peer, HttpMethod.GET, requestEntity, String[].class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
