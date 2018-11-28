@@ -118,7 +118,7 @@ public class WebAppController {
 		params.put("chaincodeType", "golang");
 		params.put("peers", peer);
 		model.addAllAttributes(params);
-		model.addAttribute(org, org);
+		model.addAttribute("org", org);
 		
 		return "instantiate";
 	}
