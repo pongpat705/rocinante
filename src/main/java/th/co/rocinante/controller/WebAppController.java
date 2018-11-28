@@ -140,7 +140,9 @@ public class WebAppController {
 				Map<String, Object> xx = mapper.readValue(param, typeRef);
 				toJson.put(k, xx);
 			}else {
-				if(!"org".equals(k)) {
+				if("org".equals(k)) {
+					org =  formData.getFirst(k);
+				} else {
 					toJson.put(k, formData.getFirst(k));
 				}
 			}
