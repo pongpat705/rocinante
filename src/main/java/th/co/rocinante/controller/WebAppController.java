@@ -137,6 +137,7 @@ public class WebAppController {
 				toJson.put(k, param);
 			} else if("endorsePolicy".equals(k)){
 				String param = formData.getFirst(k);
+//				param = param.replaceAll("\"", "'");
 				TypeReference<HashMap<String,Object>> typeRef  = new TypeReference<HashMap<String,Object>>() {};
 				Map<String, Object> xx = mapper.readValue(param, typeRef);
 				toJson.put(k, xx);
