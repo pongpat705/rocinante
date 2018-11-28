@@ -16,12 +16,19 @@
 				<tr><td>Version : <input type="text" name="chaincodeVersion" th:value="${chaincodeVersion}" readOnly/></td></tr>
 				<tr><td>Type ( golang ) <input type="text" name="chaincodeType" th:value="${chaincodeType}" readOnly/></td></tr>
 				<tr><td>Peers <input type="text" name="peers" th:value="${peers}" readOnly/></td></tr>
+				<tr><td>Function (optional) <input type="text" name="fcn"/></td></tr>
 				<tr><td>Argument <input type="text" name="args" /></td></tr>
 				<tr><td>Policy <input type="text" name="endorsePolicy" /></td></tr>
 				<tr><td>Organization <input type="text" name="org" th:value="${org}" readOnly/></td></tr>
 				<tr><td></td><td><input type="submit" /></td></tr>
 			</table>
 		</form>
+	</div>
+	
+	<div>
+		Argument ex <pre>a,100,b,200</pre>
+		<br>
+		Policy ex <pre>{"identities":[{"role":{"name":"member","mspId":"IndMSP"}},{"role":{"name":"member","mspId":"KtbMSP"}},{"role":{"name":"member","mspId":"CmlMSP"}},{"role":{"name":"member","mspId":"PolMSP"}}],"policy":{"1-of":[{"signed-by":0},{"signed-by":1},{"signed-by":2},{"signed-by":3}]}}</pre>
 	</div>
     
 </body>

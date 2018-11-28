@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,12 +140,15 @@ public class WebAppController {
 				TypeReference<HashMap<String,Object>> typeRef  = new TypeReference<HashMap<String,Object>>() {};
 				Map<String, Object> xx = mapper.readValue(param, typeRef);
 				toJson.put(k, xx);
-			}else {
-				if("org".equals(k)) {
-					org =  formData.getFirst(k);
-				} else {
-					toJson.put(k, formData.getFirst(k));
+			} else if("org".equals(k)){
+				org =  formData.getFirst(k);
+			} else if("fcn".equals(k)){
+				String param = formData.getFirst(k);
+				if(!StringUtils.isEmpty(param)) {
+					toJson.put(k, param);
 				}
+			}else {
+				toJson.put(k, formData.getFirst(k));
 			}
 			
 		}
