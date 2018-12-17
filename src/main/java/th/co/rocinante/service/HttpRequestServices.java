@@ -35,7 +35,7 @@ public class HttpRequestServices {
 	    headers.add("Content-Type", "application/json");
 	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-	    ResponseEntity<ChannelList> responseEntity = rest.exchange("http://192.168.43.170:4000/channels?peer="+peer, HttpMethod.GET, requestEntity, ChannelList.class);
+	    ResponseEntity<ChannelList> responseEntity = rest.exchange("http://localhost:4000/channels?peer="+peer, HttpMethod.GET, requestEntity, ChannelList.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -50,7 +50,7 @@ public class HttpRequestServices {
 	    headers.add("Content-Type", "application/json");
 	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/chaincodes?peer="+peer+"&type=installed", HttpMethod.GET, requestEntity, String[].class);
+	    ResponseEntity<String[]> responseEntity = rest.exchange("http://localhost:4000/chaincodes?peer="+peer+"&type=installed", HttpMethod.GET, requestEntity, String[].class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -65,7 +65,7 @@ public class HttpRequestServices {
 	    headers.add("Content-Type", "application/json");
 	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 		HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-	    ResponseEntity<String[]> responseEntity = rest.exchange("http://192.168.43.170:4000/channels/"+appParam.getChannel()+"/chaincodes?peer="+peer, HttpMethod.GET, requestEntity, String[].class);
+	    ResponseEntity<String[]> responseEntity = rest.exchange("http://localhost:4000/channels/"+appParam.getChannel()+"/chaincodes?peer="+peer, HttpMethod.GET, requestEntity, String[].class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -82,7 +82,7 @@ public class HttpRequestServices {
 	    map.add("username", user);
 	    map.add("orgName", orgName);
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-	    ResponseEntity<Enroll> responseEntity = rest.exchange("http://192.168.43.170:4000/users", HttpMethod.POST, requestEntity, Enroll.class);
+	    ResponseEntity<Enroll> responseEntity = rest.exchange("http://localhost:4000/users", HttpMethod.POST, requestEntity, Enroll.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -104,7 +104,7 @@ public class HttpRequestServices {
 	    obj.setChaincodeVersion(chaincodeVersion);
 	    
 		HttpEntity<InstallChaincode> requestEntity = new HttpEntity<InstallChaincode>(obj, headers);
-	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://192.168.43.170:4000/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);
+	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://localhost:4000/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
@@ -120,7 +120,7 @@ public class HttpRequestServices {
 	    headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
 	    
 		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(value, headers);
-	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://192.168.43.170:4000/channels/"+appParam.getChannel()+"/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);
+	    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://localhost:4000/channels/"+appParam.getChannel()+"/chaincodes", HttpMethod.POST, requestEntity, MessageBean.class);
 	    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
 	    	
 	    }
