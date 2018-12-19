@@ -25,7 +25,7 @@ import th.co.rocinante.bean.MessageBean;
 public class StorageService {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());	
-	static String localfolder = "/home/osboxes/hyperledger/fabric-samples/new-cert-network/artifacts/src/upload";
+	static String localfolder = "/home/hyperledger/fabric-samples/cert-hyperledger-network/artifacts/src/upload";
 	
 	@Autowired RunDeCommandService runDeCommand;
 	
