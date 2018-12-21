@@ -53,6 +53,7 @@ public class WebAppController {
 	
 	@PostMapping("/create-join-channel")
 	public String createJoinChannel(@RequestBody MultiValueMap<String, String> formData ){
+		httpServices.createAndJoinChannel(formData.getFirst("channelName"), formData.getFirst("channelPath"));
 		return "redirect:/";
 	}
 	
