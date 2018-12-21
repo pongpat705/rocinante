@@ -1,5 +1,7 @@
 package th.co.rocinante.service;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -71,6 +73,54 @@ public class HttpRequestServices {
 	    }
 	    log.info( responseEntity.getBody().toString());
 	    return responseEntity.getBody();
+		
+	}
+	
+	public void createAndJoinChannel(String channelName, String channelPath) {
+		RestTemplate rest = new RestTemplate();
+		
+		List<String> orgNames = appParam.getOrgNames();
+		for (int i = 0; i < orgNames.size(); i++) {
+			String org = orgNames.get(i);
+			if(i == 0) {
+			
+				HttpHeaders headers = new HttpHeaders();
+				headers.add("Content-Type", "application/json");
+				headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
+			    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+			    map.add("channelName", channelName);
+			    map.add("channelConfigPath", channelPath);
+				HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+			    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://localhost:4000/channels", HttpMethod.POST, requestEntity, MessageBean.class);
+			    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+			    	
+			    }
+			    
+			}
+			
+			String[] peersInd = {"peer0.ind.cert.com","peer1.ind.cert.com"};
+			String[] peersKtb = {"peer0.ktb.cert.com","peer1.ktb.cert.com"};
+			String[] peersCml = {"peer0.cml.cert.com","peer1.cml.cert.com"};
+			String[] peersPol = {"peer0.pol.cert.com","peer1.pol.cert.com"};
+			
+			String[] peer = null;
+			if(org.equals("Ind")) peer = peersInd;
+			if(org.equals("Ktb")) peer = peersKtb;
+			if(org.equals("Cml")) peer = peersCml;
+			if(org.equals("Pol")) peer = peersPol;
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Content-Type", "application/json");
+			headers.add("Authorization", "Bearer "+appParam.getApiParam().get(org).getToken());
+		    MultiValueMap<String, String[]> map= new LinkedMultiValueMap<String, String[]>();
+		    map.add("peers", peer);
+			HttpEntity<MultiValueMap<String, String[]>> requestEntity = new HttpEntity<MultiValueMap<String, String[]>>(map, headers);
+		    ResponseEntity<MessageBean> responseEntity = rest.exchange("http://localhost:4000/channels/"+channelName+"/peers", HttpMethod.POST, requestEntity, MessageBean.class);
+		    if(!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+		    	
+		    }
+			
+		}
 		
 	}
 	

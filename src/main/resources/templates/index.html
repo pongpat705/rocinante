@@ -6,6 +6,8 @@
 </head>
 <body>
 				[[${params}]]
+				
+				<a  th:href="@{/create-join-channel}" th:text="'create & join channel'"></a>
 				<ul >
 					<li th:each="s : ${params}">
 						<p th:text="${s.orgName}"></p>

@@ -46,6 +46,16 @@ public class WebAppController {
 		return "index";
 	}
 	
+	@GetMapping("/create-join-channel")
+	public String createJoinChannel(Model model){
+		return "create-join-channel";
+	}
+	
+	@PostMapping("/create-join-channel")
+	public String createJoinChannel(@RequestBody MultiValueMap<String, String> formData ){
+		return "redirect:/";
+	}
+	
 	@GetMapping("/channels")
 	public String channels(Model model, @RequestParam String peer, @RequestParam String org) {
 		ChannelList channelList = httpServices.getJoinedChannel(peer, org);
