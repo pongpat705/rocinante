@@ -14,7 +14,7 @@ public class ScheduleService {
 	@Autowired
 	private AppGlobalParam appGlobal;
 
-	@Scheduled(cron="0 0 8 * * *")
+	@Scheduled(fixedDelay=1800000)
 	public void everyDay() {
 		log.info("reload token");
 		appGlobal.EnrollUser();
